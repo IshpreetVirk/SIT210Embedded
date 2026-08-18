@@ -13,10 +13,10 @@ The program uses a separate function called `runLightingSequence()` to control t
 This makes the program easier to understand because the main loop only checks the button, while the lighting sequence is handled separately.
 
 Circuit
-* D2 → Yellow Porch LED
-* D3 → Red Hallway LED
-* D4 → Push Button
-* LEDs → Connected through resistors
+* D8 → Green Porch LED
+* D2 → Red Hallway LED
+* D6 → Push Button
+* LEDs → Connected through the one resistor
 * GND → Common ground
 
 Result
