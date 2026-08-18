@@ -1,52 +1,45 @@
-// Set the pins for the lights and button
-const int porchLight = 2;
-const int hallwayLight = 8;
-const int buttonPin = 6;
+//Setting up the pins
+const int porchLight = 2;    
+const int hallwayLight = 8; 
+const int buttonPin = 6;           
 
-
-void setup() {
-  // Set light pins as output 
+void setup() 
+{
+  //Initalizing the pins
   pinMode(porchLight, OUTPUT);
   pinMode(hallwayLight, OUTPUT);
-
-  // Set button pin as input
   pinMode(buttonPin, INPUT);
 
-  Serial.begin(9600);
 }
 
-
-void loop() {
-  // Check if the button is pressed
+void loop() 
+{
+  //Initializing the button
   int buttonState = digitalRead(buttonPin);
 
-  // Start the lights when button is pressed
-  if (buttonState == HIGH) {
-    Serial.println("Linda has arrived! Activating Smart Lights...");
-    runLightingSequence();
+
+  if (buttonState == HIGH) 
+  {
+    lightsOn(); 
   }
 }
 
-
-// This function controls the lights
-void runLightingSequence() {
-
-  // Turn both lights on
+// Function to control the lights as per linda's requirements
+void lightsOn() 
+{
+  //Both the lights turned on
   digitalWrite(porchLight, HIGH);
   digitalWrite(hallwayLight, HIGH);
-  Serial.println("Both lights ON.");
 
-  // Wait for 30 seconds
-  delay(30000);
-
-  // Turn the yellow porch light off
+  // First wait for 30 sec
+  delay(30000); 
+  
+  // Then turn off the porch light
   digitalWrite(porchLight, LOW);
-  Serial.println("Porch yellow light OFF.");
 
-  // Wait for another 30 seconds
-  delay(30000);
-
-  // Turn the red hallway light off
+  //Second wait for 30 sec
+  delay(30000); 
+  
+  // Then turn off the hallway light
   digitalWrite(hallwayLight, LOW);
-  Serial.println("Hallway red light OFF. Done.");
 }
