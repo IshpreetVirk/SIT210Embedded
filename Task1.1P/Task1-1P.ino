@@ -5,7 +5,7 @@ const int buttonPin = 6;
 
 
 void setup() {
-  // Set light pins as output
+  // Set light pins as output 
   pinMode(porchLight, OUTPUT);
   pinMode(hallwayLight, OUTPUT);
 
