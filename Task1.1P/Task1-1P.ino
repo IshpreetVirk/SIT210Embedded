@@ -1,13 +1,13 @@
 // Set the pins for the lights and button
-const int porchLight_yellow = 2;
-const int hallwayLight_red = 3;
-const int buttonPin = 4;
+const int porchLight = 2;
+const int hallwayLight = 8;
+const int buttonPin = 6;
 
 
 void setup() {
   // Set light pins as output
-  pinMode(porchLight_yellow, OUTPUT);
-  pinMode(hallwayLight_red, OUTPUT);
+  pinMode(porchLight, OUTPUT);
+  pinMode(hallwayLight, OUTPUT);
 
   // Set button pin as input
   pinMode(buttonPin, INPUT);
@@ -32,21 +32,21 @@ void loop() {
 void runLightingSequence() {
 
   // Turn both lights on
-  digitalWrite(porchLight_yellow, HIGH);
-  digitalWrite(hallwayLight_red, HIGH);
+  digitalWrite(porchLight, HIGH);
+  digitalWrite(hallwayLight, HIGH);
   Serial.println("Both lights ON.");
 
   // Wait for 30 seconds
   delay(30000);
 
   // Turn the yellow porch light off
-  digitalWrite(porchLight_yellow, LOW);
+  digitalWrite(porchLight, LOW);
   Serial.println("Porch yellow light OFF.");
 
   // Wait for another 30 seconds
   delay(30000);
 
   // Turn the red hallway light off
-  digitalWrite(hallwayLight_red, LOW);
+  digitalWrite(hallwayLight, LOW);
   Serial.println("Hallway red light OFF. Done.");
 }
