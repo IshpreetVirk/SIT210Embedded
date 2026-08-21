@@ -1,0 +1,7 @@
+#define SSID "1234578"
+
+#define PASS "12345678"
+
+#define CH_ID  3464999
+
+#define WRITE_APIKEY "6SEL54YYRO2Q3WWY"
