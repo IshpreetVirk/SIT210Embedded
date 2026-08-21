@@ -1,7 +1,7 @@
-#define SSID "1234578"
+#define SSID "wifi name"
 
-#define PASS "12345678"
+#define PASS "wifi password"
 
-#define CH_ID  3464999
+#define CH_ID  (channel id from thingspeak)
 
-#define WRITE_APIKEY "6SEL54YYRO2Q3WWY"
+#define WRITE_APIKEY "Api key from thingspeak"
