@@ -3,17 +3,45 @@
 #include <BH1750.h>
 #include <Wire.h>
 
-#include "hello.h"
+
+// ===============================
+// Wi-Fi Details
+// ===============================
+
+#define WIFI_SSID "1234578"
+#define WIFI_PASSWORD "12345678"
+
+
+// ===============================
+// HiveMQ Details
+// ===============================
+
+#define MQTT_SERVER "6fe51bf7a6cb4327b97ade299d32a64a.s1.eu.hivemq.cloud"
+#define MQTT_PORT 8883
+#define MQTT_TOPIC "sensor/int"
+
+#define MQTT_USER "mjain"
+#define MQTT_PASSWORD "12345678"
+
+
+// ===============================
+// Objects
+// ===============================
 
 BH1750 lightMeter;
 
 WiFiSSLClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 
+
+// ===============================
+// Connect to Wi-Fi
+// ===============================
+
 void connectWiFi() {
 
   Serial.println();
-  Serial.println("Connecting to WiFi...");
+  Serial.println("Connecting to Wi-Fi...");
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
@@ -31,7 +59,7 @@ void connectWiFi() {
 
   if (WiFi.status() == WL_CONNECTED) {
 
-    Serial.println("WiFi connected!");
+    Serial.println("Wi-Fi connected!");
 
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
@@ -42,13 +70,17 @@ void connectWiFi() {
 
   } else {
 
-    Serial.println("WiFi connection failed!");
+    Serial.println("Wi-Fi connection FAILED!");
 
-    Serial.print("WiFi status: ");
+    Serial.print("Wi-Fi status: ");
     Serial.println(WiFi.status());
   }
 }
 
+
+// ===============================
+// Connect to HiveMQ
+// ===============================
 
 void connectMQTT() {
 
@@ -66,7 +98,7 @@ void connectMQTT() {
 
     } else {
 
-      Serial.print("HiveMQ connection failed. MQTT state: ");
+      Serial.print("MQTT connection failed. State: ");
       Serial.println(mqttClient.state());
 
       delay(5000);
@@ -75,53 +107,98 @@ void connectMQTT() {
 }
 
 
+// ===============================
+// Setup
+// ===============================
+
 void setup() {
 
   Serial.begin(9600);
 
-  delay(1000);
+  delay(2000);
 
   Serial.println();
-  Serial.println(" Arduino Nano 33 IoT");
-  Serial.println(" BH1750 + HiveMQ MQTT");
- 
-  // Initializing I2C
+  Serial.println("==============================");
+  Serial.println("Arduino Nano 33 IoT");
+  Serial.println("BH1750 + HiveMQ MQTT");
+  Serial.println("==============================");
+
+
+  // =============================
+  // Initialise I2C
+  // =============================
+
+  Serial.println("Starting I2C...");
+
   Wire.begin();
 
-  // Initializing BH1750
+  Serial.println("I2C started.");
+
+
+  // =============================
+  // Initialise BH1750
+  // =============================
+
+  Serial.println("Starting BH1750...");
+
   if (lightMeter.begin()) {
 
     Serial.println("BH1750 initialized successfully!");
 
   } else {
 
-    Serial.println("BH1750 initialization failed!");
+    Serial.println("BH1750 initialization FAILED!");
 
     while (1);
   }
 
-  // Connecting to Wi-Fi
+
+  // =============================
+  // Connect Wi-Fi
+  // =============================
+
   connectWiFi();
 
-  // Configuring MQTT server
+
+  // =============================
+  // Configure MQTT
+  // =============================
+
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
 
-  // Connecting to HiveMQ if Wi-Fi connected
+
+  // =============================
+  // Connect HiveMQ
+  // =============================
+
   if (WiFi.status() == WL_CONNECTED) {
 
     connectMQTT();
 
   } else {
 
-    Serial.println("HiveMQ connection skipped because Wi-Fi failed.");
+    Serial.println(
+      "HiveMQ connection skipped because Wi-Fi failed."
+    );
   }
 
+
   Serial.println();
-  Serial.println("System ready!");
+  Serial.println("==============================");
+  Serial.println("SYSTEM READY");
+  Serial.println("==============================");
 }
 
 
+// ===============================
+// Main Loop
+// ===============================
+
 void loop() {
+
+  // =============================
+  // Check Wi-Fi
+  // =============================
 
   if (WiFi.status() != WL_CONNECTED) {
 
@@ -131,7 +208,11 @@ void loop() {
     connectWiFi();
   }
 
-  // Checking MQTT connection
+
+  // =============================
+  // Check MQTT
+  // =============================
+
   if (WiFi.status() == WL_CONNECTED) {
 
     if (!mqttClient.connected()) {
@@ -142,21 +223,39 @@ void loop() {
     mqttClient.loop();
   }
 
-  // Reading light level from BH1750
+
+  // =============================
+  // Read BH1750
+  // =============================
+
   float lux = lightMeter.readLightLevel();
 
-  // Display light level
+
+  // =============================
+  // Display Lux
+  // =============================
+
   Serial.print("Light: ");
   Serial.print(lux);
-  Serial.println(" lx");
+  Serial.println(" lux");
 
-  // Converting light value to String
+
+  // =============================
+  // Convert Lux to String
+  // =============================
+
   String message = String(lux, 2);
 
-  // Publishing light value to HiveMQ
+
+  // =============================
+  // Publish to HiveMQ
+  // =============================
+
   if (mqttClient.connected()) {
 
-    if (mqttClient.publish(MQTT_TOPIC, message.c_str())) {
+    if (mqttClient.publish(
+          MQTT_TOPIC,
+          message.c_str())) {
 
       Serial.print("Published to ");
       Serial.print(MQTT_TOPIC);
@@ -165,9 +264,18 @@ void loop() {
 
     } else {
 
-      Serial.println("MQTT publish failed!");
+      Serial.println("MQTT publish FAILED!");
     }
+
+  } else {
+
+    Serial.println("MQTT is NOT connected.");
   }
+
+
+  // =============================
+  // Wait 1 second
+  // =============================
 
   delay(1000);
 }
